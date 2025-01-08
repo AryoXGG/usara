@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
             } else {
 
                 // Perubahan: Slogan diganti dengan Deskripsi
-                $sql = "INSERT INTO dishes(rs_id,title,description,price,img) VALUE('" . $_POST['res_name'] . "','" . $_POST['d_name'] . "','" . $_POST['about'] . "','" . $_POST['price'] . "','" . $fnew . "')";
+                $sql = "INSERT INTO dishes(rs_id,title,slogan,price,img) VALUE('" . $_POST['res_name'] . "','" . $_POST['d_name'] . "','" . $_POST['about'] . "','" . $_POST['price'] . "','" . $fnew . "')";
                 mysqli_query($db, $sql);
                 move_uploaded_file($temp, $store);
 
