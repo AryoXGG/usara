@@ -3,7 +3,7 @@
 $servername = "localhost"; 
 $username = "root"; 
 $password = ""; 
-$dbname = "online_food_order";  
+$dbname = "usara_umkm";  
 
 $db = mysqli_connect($servername, $username, $password, $dbname);  
 

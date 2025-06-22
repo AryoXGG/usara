@@ -5,7 +5,7 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="index.html">
                 <!-- Logo icon -->
-                <a class="navbar-brand logo"> MOODEAT </a>
+                <a class="navbar-brand logo"> USARA </a>
             </a>
         </div>
         <!-- End Logo -->

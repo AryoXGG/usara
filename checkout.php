@@ -1,164 +1,179 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 include("connection/connect.php");
 include_once 'product-action.php';
 error_reporting(0);
 session_start();
+
 if (empty($_SESSION["user_id"])) {
     header('location:login.php');
-} else {
+    exit();
+}
 
-    foreach ($_SESSION["cart_item"] as $item) {
+$success = "";
+$item_total = 0;
+$order_created = false;
 
-        $item_total += ($item["price"] * $item["quantity"]);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $payment = mysqli_real_escape_string($db, $_POST['mod']);
+    $date = date('Y-m-d H:i:s');
 
-        if ($_POST['submit']) {
+    if (!empty($_SESSION["cart_item"])) {
+        foreach ($_SESSION["cart_item"] as $item) {
+            $nama_paket = mysqli_real_escape_string($db, $item["title"]);
+            $quantity = intval($item["quantity"]);
+            $harga = intval($item["price"]);
+            $u_id = $_SESSION["user_id"];
 
-            $SQL = "insert into users_orders(u_id,title,quantity,price) values('" . $_SESSION["user_id"] . "','" . $item["title"] . "','" . $item["quantity"] . "','" . $item["price"] . "')";
-
-            mysqli_query($db, $SQL);
-
-            $success = "Thankyou! Your Order Placed successfully!";
+            $query = "INSERT INTO order_user (u_id, nama_paket, quantity, harga, payment_method, date) 
+                      VALUES ('$u_id', '$nama_paket', '$quantity', '$harga', '$payment', '$date')";
+            mysqli_query($db, $query);
         }
+
+        $order_created = true;
+        $success = "<div class='alert alert-success text-center'>Pesanan Anda berhasil dibuat!</div>";
     }
+}
+
+if (!empty($_SESSION["cart_item"])) {
+    foreach ($_SESSION["cart_item"] as $item) {
+        $item_total += ($item["price"] * $item["quantity"]);
+    }
+}
 ?>
 
-
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Checkout</title>
     <link rel="icon" type="image/x-icon" href="images/logo.ico">
-        <title>Checkout</title>
-        <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/animsition.min.css" rel="stylesheet">
-        <link href="css/animate.css" rel="stylesheet">
-        <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet">
-        <link href="footer.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        #transfer-info {
+            display: none;
+            background-color: #f7f7f7;
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<?php include("includes/navbar.php"); ?>
 
-    </head>
+<div class="page-wrapper">
+    <div class="top-links">
+        <div class="container">
+            <ul class="row links">
+                <li class="col-xs-12 col-sm-4 link-item"><span>1</span><a href="paket.php">Pilih Paket</a></li>
+                <li class="col-xs-12 col-sm-4 link-item"><span>2</span><a href="#">Detail & Bayar</a></li>
+                <li class="col-xs-12 col-sm-4 link-item active"><span>3</span><a href="#">Selesai</a></li>
+            </ul>
+        </div>
+    </div>
 
-    <body>
-        <!--header starts-->
-        <?php include("includes/navbar.php"); ?>
-        <!-- header end -->
+    <div class="container">
+        <?= $success ?>
+    </div>
 
-        <div class="site-wrapper">
-            
+    <div class="container mt-4 mb-5">
+        <form method="post">
+            <div class="widget clearfix">
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="cart-totals mb-4">
+                                <h4>Ringkasan Pesanan</h4>
+                                <?php if (!empty($_SESSION["cart_item"])): ?>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Paket</th>
+                                                <th>Qty</th>
+                                                <th>Harga</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($_SESSION["cart_item"] as $item): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($item["title"]) ?></td>
+                                                    <td><?= $item["quantity"] ?></td>
+                                                    <td>Rp <?= number_format($item["price"], 0, ',', '.') ?></td>
+                                                    <td>Rp <?= number_format($item["price"] * $item["quantity"], 0, ',', '.') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                            <tr>
+                                                <td colspan="3"><strong>Total</strong></td>
+                                                <td><strong>Rp <?= number_format($item_total, 0, ',', '.') ?></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <p class="text-center text-muted">Keranjang kosong.</p>
+                                <?php endif; ?>
+                            </div>
 
-            <div class="page-wrapper">
-                <div class="top-links">
-                    <div class="container">
-                        <ul class="row links">
+                            <?php if (!empty($_SESSION["cart_item"])): ?>
+                            <div class="payment-option">
+                                <h5>Pilih Metode Pembayaran:</h5>
+                                <label class="custom-control custom-radio">
+                                    <input name="mod" type="radio" class="custom-control-input" value="Cash" checked onclick="toggleTransferInfo()">
+                                    <span class="custom-control-indicator"></span> Bayar Tunai (Cash)
+                                </label>
+                                <label class="custom-control custom-radio mt-2">
+                                    <input name="mod" type="radio" class="custom-control-input" value="Transfer" onclick="toggleTransferInfo()">
+                                    <span class="custom-control-indicator"></span> Transfer Bank (Manual)
+                                </label>
 
-                            <li class="col-xs-12 col-sm-4 link-item"><span>1</span><a href="restaurants.php">Choose Restaurant</a></li>
-                            <li class="col-xs-12 col-sm-4 link-item "><span>2</span><a href="#">Pick Your favorite food</a></li>
-                            <li class="col-xs-12 col-sm-4 link-item active"><span>3</span><a href="checkout.php">Order and Pay online</a></li>
-                        </ul>
+                                <!-- Transfer Bank Info -->
+                                <div id="transfer-info">
+                                    <h6><strong>Informasi Transfer:</strong></h6>
+                                    <p>
+                                        Silakan transfer ke rekening berikut:<br>
+                                        <strong>Bank BCA</strong><br>
+                                        No Rekening: <strong>1234567890</strong><br>
+                                        Atas Nama: <strong>USARA DIGITAL</strong>
+                                    </p>
+                                    <p>
+                                        Setelah transfer, silakan konfirmasi ke WhatsApp kami di <a href="https://wa.me/62895401162217" target="_blank">+62 895-4011-62217</a>.
+                                    </p>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button type="submit" name="submit" class="btn btn-success btn-lg" onclick="return confirm('Apakah Anda yakin ingin memesan?');">Pesan Sekarang</button>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                        </div>
                     </div>
                 </div>
-
-                <div class="container">
-                    <span style="color:green;">
-                        <?php echo $success; ?>
-                    </span>
-                </div>
-
-
-
-
-                <div class="container m-t-30">
-                    <form action="" method="post">
-                        <div class="widget clearfix">
-
-                            <div class="widget-body">
-                                <form method="post" action="#">
-                                    <div class="row">
-
-                                        <div class="col-sm-12">
-                                            <div class="cart-totals margin-b-20">
-                                                <div class="cart-totals-title">
-                                                    <h4>Cart Summary</h4>
-                                                </div>
-                                                <div class="cart-totals-fields">
-
-                                                    <table class="table">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Cart Subtotal</td>
-                                                                <td> <?php echo "Rp." . $item_total; ?></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Shipping &amp; Handling</td>
-                                                                <td>free shipping</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-color"><strong>Total</strong></td>
-                                                                <td class="text-color"><strong> <?php echo "Rp." . $item_total; ?></strong></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <!--cart summary-->
-                                            <div class="payment-option">
-                                                <ul class=" list-unstyled">
-                                                    <li>
-                                                        <label class="custom-control custom-radio  m-b-20">
-                                                            <input name="mod" id="radioStacked1" checked value="COD" type="radio" class="custom-control-input"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Cash on delivery</span>
-                                                            <br> <span>Pastikan anda mengisi alamat dengan benar.</span> </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="custom-control custom-radio  m-b-10">
-                                                            <input name="mod" type="radio" value="gopay" class="custom-control-input"> <span class="custom-control-indicator"></span> <span class="custom-control-description"><img src="images/gopay.png" alt="" width="200"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                                <p class="text-xs-center"> <input type="submit" onclick="return confirm('Are you sure?');" name="submit" class="btn btn-outline-success btn-block" value="Order now"> </p>
-                                            </div>
-                                </form>
-                            </div>
-                        </div>
-
-                </div>
             </div>
-            </form>
-        </div>
+        </form>
+    </div>
+</div>
 
+<?php include("includes/footer.php"); ?>
 
-        <!-- Featured restaurants ends -->
-
-
-
-
-        </div>
-        <!-- end:page wrapper -->
-        </div>
-        
-        <!-- FOOTER SECTION ----------------------- -->
-        <?php include("includes/footer.php"); ?>
-        <!-- FOOTER SECTION END----------------- -->
-
-        <!-- Bootstrap core JavaScript
-    ================================================== -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/tether.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/animsition.min.js"></script>
-        <script src="js/bootstrap-slider.min.js"></script>
-        <script src="js/jquery.isotope.min.js"></script>
-        <script src="js/headroom.js"></script>
-        <script src="js/foodpicky.min.js"></script>
-    </body>
-
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+function toggleTransferInfo() {
+    const transferRadio = document.querySelector('input[value="Transfer"]');
+    const transferInfo = document.getElementById('transfer-info');
+    transferInfo.style.display = transferRadio.checked ? 'block' : 'none';
+}
+window.onload = toggleTransferInfo;
+</script>
+</body>
 </html>
 
 <?php
+if ($order_created) {
+    unset($_SESSION["cart_item"]);
 }
 ?>

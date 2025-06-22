@@ -1,173 +1,99 @@
 <?php
-
 include("../connection/connect.php");
 error_reporting(0);
 session_start();
 
-if (isset($_POST['update'])) {
-  $form_id = $_GET['form_id'];
-  $status = $_POST['status'];
-  $remark = $_POST['remark'];
-  $query = mysqli_query($db, "insert into remark(frm_id,status,remark) values('$form_id','$status','$remark')");
-  $sql = mysqli_query($db, "update users_orders set status='$status' where o_id='$form_id'");
-
-  echo "<script>alert('form details updated successfully');</script>";
+if (empty($_SESSION["adm_id"])) {
+    header('location:index.php');
+    exit();
 }
 
+if (isset($_POST['update'])) {
+    $order_id = $_GET['order_id'];
+    $status = mysqli_real_escape_string($db, $_POST['status']);
+
+    $update = mysqli_query($db, "UPDATE order_user SET status='$status' WHERE o_id='$order_id'");
+
+    if ($update) {
+        echo "<script>alert('Status pesanan berhasil diperbarui!'); window.location.href='all_orders.php';</script>";
+    } else {
+        echo "<script>alert('Gagal memperbarui status!');</script>";
+    }
+}
 ?>
-<script language="javascript" type="text/javascript">
-  function f2() {
-    window.close();
-  }
-  ser
 
-  function f3() {
-    window.print();
-  }
-</script>
-
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <title>Edit Status Pesanan</title>
+    <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../images/logo.ico">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f7f7f7;
+            font-family: 'Segoe UI', sans-serif;
+        }
 
-  <title>Admin Dashboard</title>
-  <!-- Bootstrap Core CSS -->
-  <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom CSS -->
-  <link href="css/helper.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <link href="css/style.css" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        .container-form {
+            max-width: 600px;
+            background: #fff;
+            margin: 60px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
 
-  <style type="text/css" rel="stylesheet">
-    .indent-small {
-      margin-left: 5px;
-    }
+        h3 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-    .form-group.internal {
-      margin-bottom: 0;
-    }
+        label {
+            font-weight: bold;
+        }
 
-    .dialog-panel {
-      margin: 10px;
-    }
+        select.form-control {
+            height: 45px;
+        }
 
-    .datepicker-dropdown {
-      z-index: 200 !important;
-    }
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    .panel-body {
-      background: #e5e5e5;
-      /* Old browsers */
-      background: -moz-radial-gradient(center, ellipse cover, #e5e5e5 0%, #ffffff 100%);
-      /* FF3.6+ */
-      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #e5e5e5), color-stop(100%, #ffffff));
-      /* Chrome,Safari4+ */
-      background: -webkit-radial-gradient(center, ellipse cover, #e5e5e5 0%, #ffffff 100%);
-      /* Chrome10+,Safari5.1+ */
-      background: -o-radial-gradient(center, ellipse cover, #e5e5e5 0%, #ffffff 100%);
-      /* Opera 12+ */
-      background: -ms-radial-gradient(center, ellipse cover, #e5e5e5 0%, #ffffff 100%);
-      /* IE10+ */
-      background: radial-gradient(ellipse at center, #e5e5e5 0%, #ffffff 100%);
-      /* W3C */
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5e5e5', endColorstr='#ffffff', GradientType=1);
-      /* IE6-9 fallback on horizontal gradient */
-      font: 600 15px "Open Sans", Arial, sans-serif;
-    }
-
-    label.control-label {
-      font-weight: 600;
-      color: #777;
-    }
-
-
-
-
-
-
-
-
-    table {
-      width: 650px;
-      border-collapse: collapse;
-      margin: auto;
-      margin-top: 50px;
-    }
-
-    /* Zebra striping */
-    tr:nth-of-type(odd) {
-      background: #eee;
-    }
-
-    th {
-      background: #004684;
-      color: white;
-      font-weight: bold;
-    }
-
-    td,
-    th {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: left;
-      font-size: 14px;
-    }
-  </style>
+        .btn {
+            min-width: 100px;
+        }
+    </style>
 </head>
-
 <body>
 
-  <div style="margin-left:10px;">
-    <form name="updateticket" id="updatecomplaint" method="post">
+<div class="container-form">
+    <h3>Edit Status Pesanan</h3>
+    <form method="post">
+        <div class="form-group">
+            <label>ID Pesanan</label>
+            <input type="text" class="form-control" value="<?= htmlspecialchars($_GET['order_id']) ?>" readonly>
+        </div>
 
-      <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <td><b>Form Number</b></td>
-          <td><?php echo htmlentities($_GET['form_id']); ?></td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
+        <div class="form-group">
+            <label>Status</label>
+            <select name="status" class="form-control" required>
+                <option value="">-- Pilih Status --</option>
+                <option value="Belum Bayar">Belum Bayar</option>
+                <option value="Lunas">Lunas</option>
+            </select>
+        </div>
 
-          <td>&nbsp;</td>
-        </tr>
-
-        <tr>
-          <td><b>Status</b></td>
-          <td><select name="status" required="required">
-              <option value="">Select Status</option>
-              <option value="in process">In Process</option>
-              <option value="closed">Delivered</option>
-              <option value="rejected">Rejected</option>
-
-            </select></td>
-        </tr>
-
-
-        W<tr>
-          <td><b>Remark</b></td>
-          <td><textarea name="remark" cols="50" rows="10" required="required"></textarea></td>
-        </tr>
-
-
-
-        <tr>
-          <td><b>Action</b></td>
-          <td><input type="submit" name="update" class="btn btn-primary" value="Submit">
-
-            <input name="Submit2" type="submit" class="btn btn-danger" value="Close this window " onClick="return f2();" style="cursor: pointer;" />
-          </td>
-        </tr>
-
-
-      </table>
+        <div class="form-actions">
+            <button type="submit" name="update" class="btn btn-success">Simpan</button>
+            <a href="all_orders.php" class="btn btn-secondary">Tutup</a>
+        </div>
     </form>
-  </div>
+</div>
 
 </body>
-
 </html>

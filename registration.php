@@ -134,7 +134,7 @@ if (isset($_POST['submit'])) {
                                             <input type="password" class="form-control" name="cpassword" id="exampleInputPassword2" placeholder="Ulangi Kata Sandi">
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="exampleTextarea">Alamat Pengiriman</label>
+                                            <label for="exampleTextarea">Alamat</label>
                                             <textarea class="form-control" id="exampleTextarea" name="address" rows="3"></textarea>
                                         </div>
                                     </div>
