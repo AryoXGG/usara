@@ -28,7 +28,7 @@
                     </a>
                     <ul aria-expanded="false" class="collapse">
                         <li><a href="allusers.php">All Users</a></li>
-                        <li><a href="add_users.php">Add Users</a></li>
+                      <!--  <li><a href="add_users.php">Add Users</a></li> -->
                     </ul>
                 </li>
 

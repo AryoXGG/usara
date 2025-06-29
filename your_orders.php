@@ -52,6 +52,20 @@ if (empty($_SESSION['user_id'])) {
             background-color: #f9f9f9;
         }
 
+        .btn-statistik {
+            padding: 5px 10px;
+            font-size: 13px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .btn-statistik:hover {
+            background-color: #0056b3;
+        }
+
         @media (max-width: 768px) {
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -107,13 +121,14 @@ if (empty($_SESSION['user_id'])) {
                     <th>Metode</th>
                     <th>Status</th>
                     <th>Tanggal</th>
+                    <th>Statistik</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $query_res = mysqli_query($db, "SELECT * FROM order_user WHERE u_id='" . $_SESSION['user_id'] . "' ORDER BY date DESC");
                 if (mysqli_num_rows($query_res) == 0) {
-                    echo '<tr><td colspan="6" class="text-center">Belum ada pesanan.</td></tr>';
+                    echo '<tr><td colspan="7" class="text-center">Belum ada pesanan.</td></tr>';
                 } else {
                     while ($row = mysqli_fetch_array($query_res)) {
                         echo '
@@ -124,6 +139,7 @@ if (empty($_SESSION['user_id'])) {
                             <td data-column="Metode">' . htmlspecialchars($row['payment_method']) . '</td>
                             <td data-column="Status">' . ($row['status'] ? htmlspecialchars($row['status']) : '-') . '</td>
                             <td data-column="Tanggal">' . date("d-m-Y H:i", strtotime($row['date'])) . '</td>
+                            <td data-column="Statistik"><a href="statistik_toko.php" class="btn-statistik">Lihat</a></td>
                         </tr>';
                     }
                 }
@@ -134,7 +150,6 @@ if (empty($_SESSION['user_id'])) {
 </div>
 
 <?php include("includes/footer.php"); ?>
-
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 </body>
