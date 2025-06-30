@@ -9,9 +9,7 @@ if (empty($_SESSION["user_id"])) {
     exit();
 }
 
-$success = "";
 $item_total = 0;
-$order_created = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $payment = mysqli_real_escape_string($db, $_POST['mod']);
@@ -29,8 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
             mysqli_query($db, $query);
         }
 
-        $order_created = true;
-        $success = "<div class='alert alert-success text-center'>Pesanan Anda berhasil dibuat!</div>";
+        unset($_SESSION["cart_item"]);
+        header("Location: your_orders.php");
+        exit();
     }
 }
 
@@ -73,10 +72,6 @@ if (!empty($_SESSION["cart_item"])) {
                 <li class="col-xs-12 col-sm-4 link-item active"><span>3</span><a href="#">Selesai</a></li>
             </ul>
         </div>
-    </div>
-
-    <div class="container">
-        <?= $success ?>
     </div>
 
     <div class="container mt-4 mb-5">
@@ -171,9 +166,3 @@ window.onload = toggleTransferInfo;
 </script>
 </body>
 </html>
-
-<?php
-if ($order_created) {
-    unset($_SESSION["cart_item"]);
-}
-?>
