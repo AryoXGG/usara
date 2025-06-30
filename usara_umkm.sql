@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 22, 2025 at 10:37 AM
+-- Generation Time: Jun 30, 2025 at 07:53 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -59,13 +59,6 @@ CREATE TABLE `order_user` (
   `status` varchar(50) DEFAULT 'Belum Bayar'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `order_user`
---
-
-INSERT INTO `order_user` (`o_id`, `u_id`, `nama_paket`, `quantity`, `harga`, `payment_method`, `date`, `status`) VALUES
-(66, 38, 'paket gg', 1, 50000, 'Transfer', '2025-06-22 10:21:09', 'Belum Bayar');
-
 -- --------------------------------------------------------
 
 --
@@ -97,22 +90,19 @@ INSERT INTO `paket_digitalisasi` (`paket_id`, `title`, `price`, `description`, `
 CREATE TABLE `users` (
   `u_id` int NOT NULL,
   `username` varchar(222) NOT NULL,
-  `f_name` varchar(222) NOT NULL,
-  `l_name` varchar(222) NOT NULL,
-  `email` varchar(222) NOT NULL,
   `phone` varchar(222) NOT NULL,
   `password` varchar(222) NOT NULL,
-  `address` text NOT NULL,
   `status` int NOT NULL DEFAULT '1',
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `nama_toko` varchar(255) DEFAULT NULL,
+  `ig` varchar(255) DEFAULT NULL,
+  `shopee` varchar(255) DEFAULT NULL,
+  `deskripsi` text,
+  `image` text CHARACTER SET latin1 COLLATE latin1_swedish_ci,
+  `followers_ig` int DEFAULT '0',
+  `penjualan_total` int DEFAULT '0',
+  `status_promosi` varchar(50) DEFAULT 'Belum Dimulai'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`u_id`, `username`, `f_name`, `l_name`, `email`, `phone`, `password`, `address`, `status`, `date`) VALUES
-(38, 'arya', 'arya', 'arya', 'arya@gmail.com', '09879958647', '611dd931040ba2284d0adc26a5e3f056', 'lamongan', 1, '2025-01-02 09:14:10');
 
 --
 -- Indexes for dumped tables
@@ -128,7 +118,8 @@ ALTER TABLE `admin`
 -- Indexes for table `order_user`
 --
 ALTER TABLE `order_user`
-  ADD PRIMARY KEY (`o_id`);
+  ADD PRIMARY KEY (`o_id`),
+  ADD KEY `fk_user_order` (`u_id`);
 
 --
 -- Indexes for table `paket_digitalisasi`
@@ -156,7 +147,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `order_user`
 --
 ALTER TABLE `order_user`
-  MODIFY `o_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `o_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `paket_digitalisasi`
@@ -168,7 +159,17 @@ ALTER TABLE `paket_digitalisasi`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `u_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `u_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `order_user`
+--
+ALTER TABLE `order_user`
+  ADD CONSTRAINT `fk_user_order` FOREIGN KEY (`u_id`) REFERENCES `users` (`u_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
