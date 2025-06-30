@@ -131,7 +131,7 @@ if (isset($_POST['submit'])) {
                 </div>
 
                 <div class="form-group">
-                    <label>Upload Gambar Produk *</label>
+                    <label>Upload Gambar Toko/Produk *</label>
                     <input type="file" name="foto" class="form-control-file">
                 </div>
 
