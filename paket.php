@@ -32,6 +32,7 @@ session_start();
         <div class="top-links">
             <div class="container">
                 <ul class="row links">
+                    <br>
                     <li class="col-xs-12 col-sm-4 link-item active"><span>1</span><a href="paket.php">Pilih Paket</a></li>
                     <li class="col-xs-12 col-sm-4 link-item"><span>2</span><a href="#">Detail & Bayar</a></li>
                     <li class="col-xs-12 col-sm-4 link-item"><span>3</span><a href="#">Selesai</a></li>
