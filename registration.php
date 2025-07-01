@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
         empty($username) || empty($phone) || empty($password) || empty($cpassword) ||
         empty($toko) || empty($ig) || empty($shopee) || empty($deskripsi) || empty($foto)
     ) {
-        $message = "Semua kolom wajib diisi!";
+        $message = "Semua kolom formulir wajib diisi!";
     } elseif ($password != $cpassword) {
         $message = "Password tidak cocok.";
     } elseif (strlen($password) < 6) {
