@@ -116,12 +116,12 @@ if (isset($_POST['submit'])) {
                 </div>
 
                 <div class="form-group">
-                    <label>Link Instagram *</label>
+                    <label>Instagram *</label>
                     <input type="text" name="ig" class="form-control" placeholder="isi username instagram toko anda">
                 </div>
 
                 <div class="form-group">
-                    <label>Link Shopee *</label>
+                    <label> Shopee *</label>
                     <input type="text" name="shopee" class="form-control" placeholder="isi username toko shopee anda">
                 </div>
 
