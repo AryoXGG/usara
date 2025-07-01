@@ -24,7 +24,8 @@ if (isset($_POST['submit'])) {
                 move_uploaded_file($temp, $store);
                 $sql = "INSERT INTO paket_digitalisasi (title, price, description, image) VALUES ('$title', '$price', '$desc', '$fnew')";
                 mysqli_query($db, $sql);
-                $success = '<div class="alert alert-success">Paket berhasil ditambahkan!</div>';
+                header("Location: all_paket.php");
+                exit();
             } else {
                 $error = '<div class="alert alert-danger">Ukuran gambar maksimal 1MB.</div>';
             }
@@ -68,7 +69,6 @@ if (isset($_POST['submit'])) {
                 <h3 class="text-primary mt-4 mb-3">Tambah Paket Digitalisasi</h3>
 
                 <?php if (isset($error)) echo $error; ?>
-                <?php if (isset($success)) echo $success; ?>
 
                 <div class="card">
                     <div class="card-body">
