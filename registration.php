@@ -34,8 +34,8 @@ if (isset($_POST['submit'])) {
         $message = "Nomor telepon tidak valid.";
     } elseif (!in_array($ext, $allowed)) {
         $message = "Format gambar harus jpg/jpeg/png.";
-    } elseif ($size > 1048576) {
-        $message = "Ukuran gambar maksimal 1MB.";
+    } elseif ($size > 2097152) {
+    $message = "Ukuran gambar maksimal 2MB.";
     } else {
         $cek_user = mysqli_query($db, "SELECT username FROM users WHERE username='$username'");
         if (mysqli_num_rows($cek_user) > 0) {
