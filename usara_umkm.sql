@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 30, 2025 at 07:53 AM
+-- Generation Time: Jul 03, 2025 at 04:50 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.8
 
@@ -79,7 +79,9 @@ CREATE TABLE `paket_digitalisasi` (
 --
 
 INSERT INTO `paket_digitalisasi` (`paket_id`, `title`, `price`, `description`, `image`, `date`) VALUES
-(60, 'paket gg', 50000, 'paket gg', '6857a7cbbcd42.png', '2025-06-22 06:50:51');
+(63, 'Paket Starter', 50000, 'Cocok untuk UMKM pemula. Promosi di sosial media dan marketplace selama 7 hari', '6866094909bbe.jpg', '2025-07-03 04:38:33'),
+(64, 'Paket Omnichannel', 100000, 'Pendampingan penuh 30 hari: branding, sosial media, katalog produk, iklan digital dasar.', '68660a15ac1e0.jpg', '2025-07-03 04:41:57'),
+(65, 'Paket Ultimate', 500000, 'layanan profesional, iklan digital aktif, dan manajemen media sosial selama 30 hari.', '68660a8241f31.jpg', '2025-07-03 04:43:46');
 
 -- --------------------------------------------------------
 
@@ -103,6 +105,13 @@ CREATE TABLE `users` (
   `penjualan_total` int DEFAULT '0',
   `status_promosi` varchar(50) DEFAULT 'Belum Dimulai'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`u_id`, `username`, `phone`, `password`, `status`, `date`, `nama_toko`, `ig`, `shopee`, `deskripsi`, `image`, `followers_ig`, `penjualan_total`, `status_promosi`) VALUES
+(45, 'aryo', '081234567890', 'd9b542b2bec8892af8801b0e25fca6f2', 1, '2025-06-30 14:50:42', 'toko_aryo', 'aryo', 'aryo', 'ini adalah toko', 'images/produk/1751294132_Screenshot_2025-06-30_140654.png', 14500, 122, 'Belum Dimulai');
 
 --
 -- Indexes for dumped tables
@@ -147,19 +156,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `order_user`
 --
 ALTER TABLE `order_user`
-  MODIFY `o_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `o_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `paket_digitalisasi`
 --
 ALTER TABLE `paket_digitalisasi`
-  MODIFY `paket_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `paket_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `u_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `u_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Constraints for dumped tables
